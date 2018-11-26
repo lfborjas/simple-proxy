@@ -1,12 +1,71 @@
 # Who proxies the proxy
 
-Little Common Lisp throwaway thingy to be able to test edge cases on a proxy server
+Little Common Lisp throwaway server to be able to test edge cases on a proxy server
 
 ## Usage
 
-Should be able to just call this service with the url you want to proxy to and the timeout (if any), and the rest of the querystring/request body/headers will be sent on over to the original service.
+The only endpoint right now is `proxy-request`:
 
-If you choose a timeout, it'll sleep for that amount of _minutes_ and then respond. Your code should be prepared for this.
+```
+POST /proxy-request?url=some_url&timeout=1
+```
+
+Where:
+
+* `url` is a _full_ url that you want the proxy service to call on your behalf.
+* `timeout` is the timeout in *minutes* you want it to sleep before responding.
+
+### Example interaction
+
+Notice that the `url` parameter is urlencoded. You can quickly put a string like this together using a free service like https://www.url-encode-decode.com/ (or your favorite language's native capabilities).
+
+```sh
+curl -vH "Content-Type: text/xml" -d "<TransferredValueTxn><TransferredValueTxnReq> <ReqCat>TransferredValue</ReqCat> <ReqAction>Echo</ReqAction> <Date>20181017</Date> <Time>180000</Time> <PartnerName>PARTNER</PartnerName> <EchoData>test</EchoData></TransferredValueTxnReq> </TransferredValueTxn>" http://localhost:8666/proxy-request\?url\=https%3A%2F%2Fxml-mockery.herokuapp.com%2Fcard_service
+*   Trying ::1...
+* TCP_NODELAY set
+* Connection failed
+* connect to ::1 port 8666 failed: Connection refused
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 8666 (#0)
+> POST /proxy-request?url=https%3A%2F%2Fxml-mockery.herokuapp.com%2Fcard_service HTTP/1.1
+> Host: localhost:8666
+> User-Agent: curl/7.54.0
+> Accept: */*
+> Content-Type: text/xml
+> Content-Length: 258
+> 
+* upload completely sent off: 258 out of 258 bytes
+< HTTP/1.1 200 OK
+< Content-Length: 610
+< Date: Mon, 26 Nov 2018 23:40:20 GMT
+< Server: Hunchentoot 1.2.38
+< Content-Type: text/xml; charset=utf-8
+< 
+<?xml version="1.0" encoding="UTF-8"?>
+<TransferredValueTxn>
+	<TransferredValueTxnResp>
+		<RespCat>TransferredValue</RespCat>
+		<RespAction>Echo</RespAction>
+		<RespCode>0</RespCode>
+		<RespMsg>Echoing</RespMsg>
+		<RespRefNum>246686</RespRefNum>
+		<Date>"20181126"</Date>
+		<Time>"234015"</Time>
+		<EchoData>test</EchoData>
+		<TransferredValueTxnReq>
+			<ReqCat>TransferredValue</ReqCat>
+			<ReqAction>Echo</ReqAction>
+			<Date>20181017</Date>
+			<Time>180000</Time>
+			<PartnerName>MOCK</PartnerName>
+			<EchoData>test</EchoData>
+		</TransferredValueTxnReq>
+	</TransferredValueTxnResp>
+</TransferredValueTxn>
+* Connection #0 to host localhost left intact
+
+```
 
 ## Setup
 

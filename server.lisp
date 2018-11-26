@@ -12,7 +12,6 @@
 
 ;; Main handler
 (hunchentoot:define-easy-handler (proxy-request :uri "/proxy-request") (url timeout)
-
   ;; if they want a timeout, assume they meant minutes and do just that:
   (let ((timeout-n (parse-integer (or timeout "0"))))
     (if (and timeout (numberp timeout-n))
@@ -22,22 +21,19 @@
   (let ((response (handle-request url
                                   (hunchentoot:raw-post-data :force-text t))))
     (setf (hunchentoot:content-type*) "text/xml")
-    response)
-  
-  (format nil "You requested ~a, ~a; with request body ~a"
-          url
-          timeout
-          ;; notice that the raw request is in `hunchentoot:*request*`
-          (hunchentoot:raw-post-data :force-text t)))
+    response))
 
-;;; PLAYING AROUND:
+;; This could be made fancier by also sending over the headers, etc, but we have some
+;; knowledge of what exactly we're dealing with here (a crappy server that don't care 'bout nothin')
+(defun handle-request (url body)
+  ;; drakma:http-request actually returns multiple values, we could look into
+  ;; leveraging those to return the right status code, headers, etc.
+  ;; more options at: https://edicl.github.io/drakma/#http-request
+  (let ((response (drakma:http-request url
+                                       :method :post
+                                       :content body
+                                       :content-type "text/xml")))
+    response))
 
-;; more options at: https://edicl.github.io/drakma/#http-request
-;; (defparameter *last-request* (drakma:http-request "https://xml-mockery.herokuapp.com/card_service"
-;;                                                   :method :post
-;;                                                   :content "<TransferredValueTxn><TransferredValueTxnReq> <ReqCat>TransferredValue</ReqCat> <ReqAction>Echo</ReqAction> <Date>20181017</Date> <Time>180000</Time> <PartnerName>PARTNER</PartnerName> <EchoData>test</EchoData></TransferredValueTxnReq> </TransferredValueTxn>"
-;;                                                   :content-type "text/xml"))
-
-;; FOR REPL INTERACTION:
 (hunchentoot:start *server*)
-(hunchentoot:stop *server*)
+;;(hunchentoot:stop *server*)
