@@ -1,5 +1,5 @@
 ;; load our sbclrc to get quicklisp
-(load "/home/luis/sbclrc")
+(load "/home/luis/.sbclrc")
 
 ;; Load dependencies
 
