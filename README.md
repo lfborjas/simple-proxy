@@ -1,6 +1,6 @@
-# Who proxies the proxy
+# Simple Proxy
 
-Little Common Lisp throwaway server to be able to test edge cases on a proxy server
+Little Common Lisp throwaway server to be able to test edge cases on a proxy server. Built to help with some testing at work in which the vendor wanted us to test the edge case of a request to their service taking too long to respond. After trying to mess with network settings, we realized we just needed a little proxy server in between us and them for testing. 
 
 ## Usage
 
