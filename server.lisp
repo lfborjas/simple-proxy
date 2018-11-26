@@ -1,3 +1,6 @@
+;; load our sbclrc to get quicklisp
+(load "/home/luis/sbclrc")
+
 ;; Load dependencies
 
 ;; for http serving: https://edicl.github.io/hunchentoot/
