@@ -36,5 +36,8 @@
     response))
 
 
-(hunchentoot:start *server*)
-(princ "Call (hunchentoot:stop *server*) anytime to stop the server I just started!")
+;; This is meant to just be loaded on a REPL, if the REPL already started the server
+;; (due to hot-swapping the code), don't do that again.
+(unless (hunchentoot:started-p *server*)
+  (hunchentoot:start *server*)
+  (princ "Call (hunchentoot:stop *server*) anytime to stop the server I just started!"))

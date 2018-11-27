@@ -423,3 +423,17 @@ distribution for more information.
 #<SYSTEM t-clack-handler-hunchentoot / clack-20181018-git / quicklisp 2018-10-18>
 
 ```
+
+## References
+
+* https://www.quicklisp.org/beta/UNOFFICIAL/docs/hunchentoot/doc/index.html#example
+* http://slack.net/~evenson/abcl/hunchentoot/ (interesting comments on quicklisp)
+* https://www.quicklisp.org/beta/faq.html
+* https://github.com/lfborjas/mockery (another project to pick up this vendor's slack)
+* https://edicl.github.io/drakma/#dict-request
+* https://edicl.github.io/hunchentoot/#teen-age
+* https://github.com/fukamachi/clack (didn't really look into this, but looks neat except for the Roswell bit)
+* https://edicl.github.io/hunchentoot/#requests
+* https://stackoverflow.com/questions/45601566/endpoint-defined-with-define-easy-handler-returns-404
+* https://www.url-encode-decode.com/
+* To run as a shell script (didn't use this as I just call it from a REPL: https://stackoverflow.com/questions/9229526/how-to-use-quicklisp-when-cl-program-is-invoked-as-a-shell-script + http://www.sbcl.org/manual/#Shebang-Scripts)
