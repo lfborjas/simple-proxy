@@ -8,12 +8,14 @@ The only endpoint right now is `proxy-request`:
 
 ```
 POST /proxy-request?url=some_url&timeout=1
+Body-of-the-request
 ```
 
 Where:
 
 * `url` is a _full_ url that you want the proxy service to call on your behalf.
 * `timeout` is the timeout in *minutes* you want it to sleep before responding.
+* The body of the request will be passed as-is to the receiving server. For this particular iteration, we're dealing with a service that doesn't give a crap about headers, so we're not sending them over, but it's an easy addition.
 
 ### Example interaction
 
@@ -66,6 +68,48 @@ curl -vH "Content-Type: text/xml" -d "<TransferredValueTxn><TransferredValueTxnR
 * Connection #0 to host localhost left intact
 
 ```
+## Running
+
+Since this is literally supposed to be alive for under a week while we finish some documentation/integration testing, I'm just running it on a REPL from tmux session on the desired server:
+
+```sh
+[staging] luis@web9.nyc2: ~/common_lisp/simple-proxy (master u+1) $ sbcl
+This is SBCL 1.4.13, an implementation of ANSI Common Lisp.
+More information about SBCL is available at <http://www.sbcl.org/>.
+
+SBCL is free software, provided as is, with absolutely no warranty.
+It is mostly in the public domain; some portions are provided under
+BSD-style licenses.  See the CREDITS and COPYING files in the
+distribution for more information.
+* (load "server.lisp")
+To load "hunchentoot":
+  Load 1 ASDF system:
+    hunchentoot
+; Loading "hunchentoot"
+....
+To load "drakma":
+  Load 1 ASDF system:
+    drakma
+; Loading "drakma"
+
+Call (hunchentoot:stop *server*) anytime to stop the server I just started!
+T
+* 10.160.20.20 - [2018-11-27 00:05:00] "GET / HTTP/1.1" 200 393 "-" "curl/7.21.0 (x86_64-pc-linux-gnu) libcurl/7.21.0 OpenSSL/0.9.8o zlib/1.2.3.4 libidn/1.15 libssh2/1.2.6"
+10.160.20.20 - [2018-11-27 00:07:23] "POST /proxy-request?url=http%3A%2F%2Fsomewhere.com%3A80%2Fsome_path%2F HTTP/1.1" 200 566 "-" "curl/7.21.0 (x86_64-pc-linux-gnu) libcurl/7.21.0 OpenSSL/0.9.8o zlib/1.2.3.4 libidn/1.15 libssh2/1.2.6"
+*
+```
+
+One cool thing: notice how the REPL is still responsive, this means we can stop the server from there, redefine methods on the fly, and even do debugging. The hunchentoot server is trucking along in a separate thread and logging to STDOUT; for example, on that same REPL:
+
+```sh
+* (hunchentoot:started-p *server*)
+T
+* (hunchentoot:stop *server*)
+#<HUNCHENTOOT:EASY-ACCEPTOR (host *, port 8666)>
+* (hunchentoot:started-p *server*)
+NIL
+```
+
 
 ## Setup
 
