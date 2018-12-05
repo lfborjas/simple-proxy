@@ -255,7 +255,8 @@ Testing that it works:
 On my host:
 
 ```sh
-* (hunchentoot:start (make-instance 'hunchentoot:acceptor :port 8666))
+* (defparameter *server* (make-instance 'hunchentoot:acceptor :port 8666))
+* (hunchentoot:start *server*)
 #<HUNCHENTOOT:ACCEPTOR (host *, port 8666)>
 ```
 
