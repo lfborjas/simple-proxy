@@ -25,13 +25,11 @@
 ;; Main handler
 (hunchentoot:define-easy-handler (proxy-request :uri "/proxy-request") (url timeout)
   ;; if they want a timeout, assume they meant minutes and do just that:
-  (let ((timeout-n (parse-integer (or timeout "0"))))
+  (let ((timeout-n (parse-integer (or timeout "0")))
+        (response  (handle-request url
+                                   (hunchentoot:raw-post-data :force-text t))))
     (if (and timeout (numberp timeout-n))
-        (sleep (* 60 timeout-n))))
-
-  ;; make the request on their behalf, and return whatever came back:
-  (let ((response (handle-request url
-                                  (hunchentoot:raw-post-data :force-text t))))
+        (sleep (* 60 timeout-n)))
     (setf (hunchentoot:content-type*) "text/xml")
     response))
 
